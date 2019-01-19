@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stock_app/main.dart';
+import 'package:stock_app/home.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
           shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(32.0)),
           onPressed: () {
             if( _emailController.text == 'admin' && _passwordController.text == 'admin' ) {
-              Navigator.pushReplacementNamed(context, MyHomePage.tag);
+              // Navigator.pushReplacementNamed(context, MyHomePage.tag);
             }
           },
           color: Colors.blue,

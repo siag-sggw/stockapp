@@ -1,107 +1,152 @@
+// Copyright 2015 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+library stocks;
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import "Pages/LoginPage.dart";
+import 'package:flutter/rendering.dart' show
+  debugPaintSizeEnabled,
+  debugPaintBaselinesEnabled,
+  debugPaintLayerBordersEnabled,
+  debugPaintPointersEnabled,
+  debugRepaintRainbowEnabled;
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() => runApp(MyApp());
+import 'stock_data.dart';
+import 'stock_home.dart';
+import 'stock_settings.dart';
+import 'stock_strings.dart';
+import 'stock_symbol_viewer.dart';
+import 'stock_types.dart';
+import 'stock_login.dart';
+import 'stock_message.dart';
 
-class MyApp extends StatelessWidget {
-  final routes = <String, WidgetBuilder>{
-    LoginPage.tag: (context) => LoginPage(),
-    MyHomePage.tag: (context) => MyHomePage(),
-  };
-  // This widget is the root of your application.
+class _StocksLocalizationsDelegate extends LocalizationsDelegate<StockStrings> {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: routes,
-      title: 'Flutter Demo',
-      theme: ThemeData(
+  Future<StockStrings> load(Locale locale) => StockStrings.load(locale);
 
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginPage(),
-    );
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'es' || locale.languageCode == 'en';
+
+  @override
+  bool shouldReload(_StocksLocalizationsDelegate old) => false;
+}
+
+class StocksApp extends StatefulWidget {
+  @override
+  StocksAppState createState() => StocksAppState();
+}
+
+class StocksAppState extends State<StocksApp> {
+  StockData stocks;
+
+  StockConfiguration _configuration = StockConfiguration(
+    stockMode: StockMode.optimistic,
+    backupMode: BackupMode.enabled,
+    debugShowGrid: false,
+    debugShowSizes: false,
+    debugShowBaselines: false,
+    debugShowLayers: false,
+    debugShowPointers: false,
+    debugShowRainbow: false,
+    showPerformanceOverlay: false,
+    showSemanticsDebugger: false
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    stocks = StockData();
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  static String tag = 'main-page';
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  void configurationUpdater(StockConfiguration value) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _configuration = value;
     });
   }
 
+  ThemeData get theme {
+    switch (_configuration.stockMode) {
+      case StockMode.optimistic:
+        return ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.purple
+        );
+      case StockMode.pessimistic:
+        return ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Colors.redAccent
+        );
+    }
+    assert(_configuration.stockMode != null);
+    return null;
+  }
+
+  Route<dynamic> _getRoute(RouteSettings settings) {
+    // Routes, by convention, are split on slashes, like filesystem paths.
+    final List<String> path = settings.name.split('/');
+    // We only support paths that start with a slash, so bail if
+    // the first component is not empty:
+    if (path[0] != '')
+      return null;
+    // If the path is "/stock:..." then show a stock page for the
+    // specified stock symbol.
+    if (path[1].startsWith('stock:')) {
+      // We don't yet support subpages of a stock, so bail if there's
+      // any more path components.
+      if (path.length != 2)
+        return null;
+      // Extract the symbol part of "stock:..." and return a route
+      // for that symbol.
+      final String symbol = path[1].substring(6);
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (BuildContext context) => StockSymbolPage(symbol: symbol, stocks: stocks),
+      );
+    }
+    // The other paths we support are in the routes table.
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text('Main Page'),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    assert(() {
+      debugPaintSizeEnabled = _configuration.debugShowSizes;
+      debugPaintBaselinesEnabled = _configuration.debugShowBaselines;
+      debugPaintLayerBordersEnabled = _configuration.debugShowLayers;
+      debugPaintPointersEnabled = _configuration.debugShowPointers;
+      debugRepaintRainbowEnabled = _configuration.debugShowRainbow;
+      return true;
+    }());
+    return MaterialApp(
+      title: 'Stocks',
+      theme: theme,
+      localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+        _StocksLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const <Locale>[
+        Locale('en', 'US'),
+        Locale('es', 'ES'),
+      ],
+      debugShowMaterialGrid: _configuration.debugShowGrid,
+      showPerformanceOverlay: _configuration.showPerformanceOverlay,
+      showSemanticsDebugger: _configuration.showSemanticsDebugger,
+      routes: <String, WidgetBuilder>{
+         '/':    (BuildContext context) => Login(),
+         '/home':(BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
+          '/message':(BuildContext context) => MesssageWidget(),
+         '/settings': (BuildContext context) => StockSettings(_configuration, configurationUpdater)
+      },
+      onGenerateRoute: _getRoute,
     );
   }
+}
+
+void main() {
+  runApp(StocksApp());
 }
