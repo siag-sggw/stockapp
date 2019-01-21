@@ -28,7 +28,7 @@ class _StocksLocalizationsDelegate extends LocalizationsDelegate<StockStrings> {
   Future<StockStrings> load(Locale locale) => StockStrings.load(locale);
 
   @override
-  bool isSupported(Locale locale) => locale.languageCode == 'es' || locale.languageCode == 'en';
+  bool isSupported(Locale locale) => locale.languageCode == 'en';
 
   @override
   bool shouldReload(_StocksLocalizationsDelegate old) => false;
@@ -43,16 +43,6 @@ class StocksAppState extends State<StocksApp> {
   StockData stocks;
 
   StockConfiguration _configuration = StockConfiguration(
-    stockMode: StockMode.optimistic,
-    backupMode: BackupMode.enabled,
-    debugShowGrid: false,
-    debugShowSizes: false,
-    debugShowBaselines: false,
-    debugShowLayers: false,
-    debugShowPointers: false,
-    debugShowRainbow: false,
-    showPerformanceOverlay: false,
-    showSemanticsDebugger: false
   );
 
   @override
@@ -62,30 +52,17 @@ class StocksAppState extends State<StocksApp> {
   }
 
   void configurationUpdater(StockConfiguration value) {
-    setState(() {
-      _configuration = value;
-    });
   }
 
   ThemeData get theme {
-    switch (_configuration.stockMode) {
-      case StockMode.optimistic:
         return ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.purple
         );
-      case StockMode.pessimistic:
-        return ThemeData(
-          brightness: Brightness.dark,
-          accentColor: Colors.redAccent
-        );
-    }
-    assert(_configuration.stockMode != null);
-    return null;
   }
 
   Route<dynamic> _getRoute(RouteSettings settings) {
-    // Routes, by convention, are split on slashes, like filesystem paths.
+    // Routes, by c_onvention, are split on slashes, like filesystem paths.
     final List<String> path = settings.name.split('/');
     // We only support paths that start with a slash, so bail if
     // the first component is not empty:
@@ -112,14 +89,6 @@ class StocksAppState extends State<StocksApp> {
 
   @override
   Widget build(BuildContext context) {
-    assert(() {
-      debugPaintSizeEnabled = _configuration.debugShowSizes;
-      debugPaintBaselinesEnabled = _configuration.debugShowBaselines;
-      debugPaintLayerBordersEnabled = _configuration.debugShowLayers;
-      debugPaintPointersEnabled = _configuration.debugShowPointers;
-      debugRepaintRainbowEnabled = _configuration.debugShowRainbow;
-      return true;
-    }());
     return MaterialApp(
       title: 'Stocks',
       theme: theme,
@@ -132,12 +101,9 @@ class StocksAppState extends State<StocksApp> {
         Locale('en', 'US'),
         Locale('es', 'ES'),
       ],
-      debugShowMaterialGrid: _configuration.debugShowGrid,
-      showPerformanceOverlay: _configuration.showPerformanceOverlay,
-      showSemanticsDebugger: _configuration.showSemanticsDebugger,
       routes: <String, WidgetBuilder>{
          '/':    (BuildContext context) => Login(),
-         '/home':(BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
+         '/home':(BuildContext context) => StockHome(stocks),
           '/message':(BuildContext context) => MesssageWidget()
       },
       onGenerateRoute: _getRoute,

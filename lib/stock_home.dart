@@ -14,50 +14,13 @@ import 'stock_types.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-typedef ModeUpdater = void Function(StockMode mode);
-
-enum _StockMenuItem { autorefresh, refresh, speedUp, speedDown }
 enum StockHomeTab { market, portfolio }
 
-class _NotImplementedDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Not Implemented'),
-      content: const Text('This feature has not yet been implemented.'),
-      actions: <Widget>[
-        FlatButton(
-          onPressed: debugDumpApp,
-          child: Row(
-            children: <Widget>[
-              const Icon(
-                Icons.dvr,
-                size: 18.0,
-              ),
-              Container(
-                width: 8.0,
-              ),
-              const Text('DUMP APP TO CONSOLE'),
-            ],
-          ),
-        ),
-        FlatButton(
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-          child: const Text('OH WELL'),
-        ),
-      ],
-    );
-  }
-}
 
 class StockHome extends StatefulWidget {
-  const StockHome(this.stocks, this.configuration, this.updater);
+  const StockHome(this.stocks);
 
   final StockData stocks;
-  final StockConfiguration configuration;
-  final ValueChanged<StockConfiguration> updater;
 
   @override
   StockHomeState createState() => StockHomeState();
@@ -81,11 +44,6 @@ class StockHomeState extends State<StockHome> {
     setState(() {
       _isSearching = true;
     });
-  }
-
-  void _handleStockModeChange(StockMode value) {
-    if (widget.updater != null)
-      widget.updater(widget.configuration.copyWith(stockMode: value));
   }
 
   Widget _buildDrawer(BuildContext context) {
