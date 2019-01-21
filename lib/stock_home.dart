@@ -88,28 +88,6 @@ class StockHomeState extends State<StockHome> {
       widget.updater(widget.configuration.copyWith(stockMode: value));
   }
 
-  void _handleStockMenu(BuildContext context, _StockMenuItem value) {
-    switch (value) {
-      case _StockMenuItem.autorefresh:
-        setState(() {
-          _autorefresh = !_autorefresh;
-        });
-        break;
-      case _StockMenuItem.refresh:
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) => _NotImplementedDialog(),
-        );
-        break;
-      case _StockMenuItem.speedUp:
-        timeDilation /= 5.0;
-        break;
-      case _StockMenuItem.speedDown:
-        timeDilation *= 5.0;
-        break;
-    }
-  }
-
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -125,56 +103,7 @@ class StockHomeState extends State<StockHome> {
             title: Text('Account Balance'),
             enabled: false,
           ),
-          ListTile(
-            leading: const Icon(Icons.dvr),
-            title: const Text('Dump App to Console'),
-            onTap: () {
-              try {
-                debugDumpApp();
-                debugDumpRenderTree();
-                debugDumpLayerTree();
-                debugDumpSemanticsTree(DebugSemanticsDumpOrder.traversalOrder);
-              } catch (e, stack) {
-                debugPrint('Exception while dumping app:\n$e\n$stack');
-              }
-            },
-          ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.thumb_up),
-            title: const Text('Optimistic'),
-            trailing: Radio<StockMode>(
-              value: StockMode.optimistic,
-              groupValue: widget.configuration.stockMode,
-              onChanged: _handleStockModeChange,
-            ),
-            onTap: () {
-              _handleStockModeChange(StockMode.optimistic);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.thumb_down),
-            title: const Text('Pessimistic'),
-            trailing: Radio<StockMode>(
-              value: StockMode.pessimistic,
-              groupValue: widget.configuration.stockMode,
-              onChanged: _handleStockModeChange,
-            ),
-            onTap: () {
-              _handleStockModeChange(StockMode.pessimistic);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: _handleShowSettings,
-          ),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('About'),
-            onTap: _handleShowAbout,
-          ),
           ListTile(
             leading: const Icon(Icons.account_circle),
             title: const Text('Log Out'),
@@ -208,28 +137,6 @@ class StockHomeState extends State<StockHome> {
           icon: const Icon(Icons.search),
           onPressed: _handleSearchBegin,
           tooltip: 'Search',
-        ),
-        PopupMenuButton<_StockMenuItem>(
-          onSelected: (_StockMenuItem value) { _handleStockMenu(context, value); },
-          itemBuilder: (BuildContext context) => <PopupMenuItem<_StockMenuItem>>[
-            CheckedPopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.autorefresh,
-              checked: _autorefresh,
-              child: const Text('Autorefresh'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.refresh,
-              child: Text('Refresh'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.speedUp,
-              child: Text('Increase animation speed'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.speedDown,
-              child: Text('Decrease animation speed'),
-            ),
-          ],
         ),
       ],
       bottom: TabBar(
@@ -310,22 +217,6 @@ class StockHomeState extends State<StockHome> {
     );
   }
 
-  void _handleCreateCompany() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) => _CreateCompanySheet(),
-    );
-  }
-
-  Widget buildFloatingActionButton() {
-    return FloatingActionButton(
-      tooltip: 'Create company',
-      child: const Icon(Icons.add),
-      backgroundColor: Theme.of(context).accentColor,
-      onPressed: _handleCreateCompany,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -333,7 +224,6 @@ class StockHomeState extends State<StockHome> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: _isSearching ? buildSearchBar() : buildAppBar(),
-        floatingActionButton: buildFloatingActionButton(),
         drawer: _buildDrawer(context),
         body: TabBarView(
           children: <Widget>[

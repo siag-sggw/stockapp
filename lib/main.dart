@@ -17,7 +17,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'stock_data.dart';
 import 'stock_home.dart';
-import 'stock_settings.dart';
 import 'stock_strings.dart';
 import 'stock_symbol_viewer.dart';
 import 'stock_types.dart';
@@ -139,8 +138,7 @@ class StocksAppState extends State<StocksApp> {
       routes: <String, WidgetBuilder>{
          '/':    (BuildContext context) => Login(),
          '/home':(BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
-          '/message':(BuildContext context) => MesssageWidget(),
-         '/settings': (BuildContext context) => StockSettings(_configuration, configurationUpdater)
+          '/message':(BuildContext context) => MesssageWidget()
       },
       onGenerateRoute: _getRoute,
     );
