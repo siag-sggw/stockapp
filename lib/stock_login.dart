@@ -60,7 +60,6 @@ class LoginState extends State<Login> {
         accessToken: gauth.accessToken,
         idToken: gauth.idToken,
       );
-      // Navigator.popAndPushNamed(context, '/home');
       Navigator.pushNamed(context, '/home');
 
       return user;
@@ -71,50 +70,3 @@ class LoginState extends State<Login> {
   }
 
 }
-
-
-// class Login extends StatelessWidget {
-//   Future<FirebaseUser> _signin() async {
-//     FirebaseAuth _auth = FirebaseAuth.instance;
-//     try {
-//       var googleSignIn = new GoogleSignIn();
-//       GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-//       GoogleSignInAuthentication gauth =
-//           await googleSignInAccount.authentication;
-//       FirebaseUser user = await _auth.signInWithGoogle(
-//         accessToken: gauth.accessToken,
-//         idToken: gauth.idToken,
-//       );
-//       // Navigator.popAndPushNamed(context, '/home');
-//       Navigator.pushNamed(null, '/home');
-
-//       return user;
-//     } catch (e) {
-//       print(e.toString());
-//     }
-//     return null;
-//   }
-
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Scaffold(
-//       appBar: new AppBar(title: new Text("Sign In")),
-//       body: new Container(
-//           padding: const EdgeInsets.all(20.0),
-//           child: new Center(
-//             child: new Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: <Widget>[
-//                     new RaisedButton(
-//                         onPressed: this._signin,
-//                         child: new Text("Sign In"),
-//                         color: Colors.lightBlueAccent,
-//                       ),
-//                 //new RaisedButton(onPressed: this.onLogout, child: new Text("Logout"), color: Colors.amberAccent),
-//               ],
-//             ),
-//           )),
-//     );
-//   }
-// }
