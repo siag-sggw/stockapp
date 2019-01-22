@@ -44,10 +44,10 @@ class StockStrings {
     locale: _localeName,
   );
 
-  String portfolio() => Intl.message(
-    'PORTFOLIO',
-    name: 'portfolio',
-    desc: 'Label for the Portfolio tab',
+  String favourites() => Intl.message(
+    'FAVOURITES',
+    name: 'favourites',
+    desc: 'Label for the Favourites tab',
     locale: _localeName,
   );
 }
