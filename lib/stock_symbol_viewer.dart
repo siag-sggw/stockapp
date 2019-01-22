@@ -1817,6 +1817,44 @@ class _StockSymbolView extends StatelessWidget {
                 gridLineLabelColor: Colors.grey
             ),
           ),
+        new Container(
+            height: 20.0,
+          ),
+      TextField(
+        keyboardType: TextInputType.number,
+  decoration: InputDecoration(
+    hintText: 'Upper notification limit'
+  ),
+          ),
+                TextField(
+                  keyboardType: TextInputType.number,
+  decoration: InputDecoration(
+    hintText: 'Lower notification limit'
+  ),
+          ),
+          new RaisedButton(
+                    padding: const EdgeInsets.all(8.0),
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: (){},
+                    child: new Text("Set notifications"),
+                  ),
+          new Container(
+            height: 20.0,
+          ),
+                          TextField(
+                  keyboardType: TextInputType.number,
+  decoration: InputDecoration(
+    hintText: 'Amount to add'
+  ),
+          ),
+          new RaisedButton(
+                    padding: const EdgeInsets.all(8.0),
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: (){},
+                    child: new Text("Add to my account"),
+                  ),
         ],
         mainAxisSize: MainAxisSize.min
       ),
