@@ -1835,26 +1835,32 @@ class _StockSymbolView extends StatelessWidget {
           new RaisedButton(
                     padding: const EdgeInsets.all(8.0),
                     textColor: Colors.white,
-                    color: Colors.blue,
+                    color: Colors.lightBlueAccent,
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
                     onPressed: (){},
                     child: new Text("Set notifications"),
                   ),
           new Container(
             height: 20.0,
           ),
-                          TextField(
-                  keyboardType: TextInputType.number,
-  decoration: InputDecoration(
-    hintText: 'Amount to add'
-  ),
+          TextField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: 'Amount to add'
+            ),
           ),
           new RaisedButton(
-                    padding: const EdgeInsets.all(8.0),
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    onPressed: (){},
-                    child: new Text("Add to my account"),
-                  ),
+            padding: const EdgeInsets.all(8.0),
+            textColor: Colors.white,
+            color: Colors.lightBlueAccent,
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0),
+            ),
+            onPressed: (){},
+            child: new Text("Add to my account"),
+          ),
         ],
         mainAxisSize: MainAxisSize.min
       ),
