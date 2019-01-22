@@ -8,10 +8,20 @@ enum StockMode { optimistic, pessimistic }
 enum BackupMode { enabled, disabled }
 
 class StockConfiguration {
+    StockConfiguration({
+      @required this.stockMode
+    }) : assert(stockMode != null);
 
-  StockConfiguration copyWith(
-  ) {
-    return StockConfiguration(
-    );
+    final StockMode stockMode;
+
+    StockConfiguration copyWith({
+      StockMode stockMode
+    }) {
+    StockConfiguration copyWith(
+    ) {
+      return StockConfiguration(
+        stockMode: stockMode ?? this.stockMode
+      );
+    }
   }
 }

@@ -15,12 +15,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 enum StockHomeTab { market, portfolio }
-
+typedef ModeUpdater = void Function(StockMode mode);
 
 class StockHome extends StatefulWidget {
-  const StockHome(this.stocks);
+  const StockHome(this.stocks, this.configuration, this.updater);
 
   final StockData stocks;
+  final StockConfiguration configuration;
+  final ValueChanged<StockConfiguration> updater;
 
   @override
   StockHomeState createState() => StockHomeState();
@@ -63,6 +65,31 @@ class StockHomeState extends State<StockHome> {
           ),
           const Divider(),
           ListTile(
+            leading: const Icon(Icons.thumb_up),
+            title: const Text('Optimistic'),
+            trailing: Radio<StockMode>(
+              value: StockMode.optimistic,
+              groupValue: widget.configuration.stockMode,
+              onChanged: _handleStockModeChange,
+            ),
+            onTap: () {
+              _handleStockModeChange(StockMode.optimistic);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.thumb_down),
+            title: const Text('Pessimistic'),
+            trailing: Radio<StockMode>(
+              value: StockMode.pessimistic,
+              groupValue: widget.configuration.stockMode,
+              onChanged: _handleStockModeChange,
+            ),
+            onTap: () {
+              _handleStockModeChange(StockMode.pessimistic);
+            },
+          ),
+          const Divider(),
+          ListTile(
             leading: const Icon(Icons.account_circle),
             title: const Text('Log Out'),
             onTap: _logout,
@@ -84,6 +111,11 @@ class StockHomeState extends State<StockHome> {
 
   void _handleShowAbout() {
     showAboutDialog(context: context);
+  }
+
+  void _handleStockModeChange(StockMode value) {
+    if (widget.updater != null)
+      widget.updater(widget.configuration.copyWith(stockMode: value));
   }
 
   Widget buildAppBar() {

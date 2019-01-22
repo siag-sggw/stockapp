@@ -43,6 +43,7 @@ class StocksAppState extends State<StocksApp> {
   StockData stocks;
 
   StockConfiguration _configuration = StockConfiguration(
+    stockMode: StockMode.optimistic
   );
 
   @override
@@ -52,13 +53,26 @@ class StocksAppState extends State<StocksApp> {
   }
 
   void configurationUpdater(StockConfiguration value) {
+    setState(() {
+      _configuration = value;
+    });
   }
 
   ThemeData get theme {
+    switch (_configuration.stockMode) {
+      case StockMode.optimistic:
         return ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.purple
         );
+      case StockMode.pessimistic:
+        return ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Colors.redAccent
+        );
+    }
+    assert(_configuration.stockMode != null);
+    return null;
   }
 
   Route<dynamic> _getRoute(RouteSettings settings) {
@@ -103,7 +117,7 @@ class StocksAppState extends State<StocksApp> {
       ],
       routes: <String, WidgetBuilder>{
          '/':    (BuildContext context) => Login(),
-         '/home':(BuildContext context) => StockHome(stocks),
+         '/home':(BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
           '/message':(BuildContext context) => MesssageWidget()
       },
       onGenerateRoute: _getRoute,
