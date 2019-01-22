@@ -25,7 +25,6 @@ class StockList extends StatelessWidget {
         return StockRow(
           stock: stocks[index],
           onPressed: onOpen,
-          onDoubleTap: onShow,
           onLongPressed: onAction
         );
       },

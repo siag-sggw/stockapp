@@ -13,13 +13,11 @@ class StockRow extends StatelessWidget {
   StockRow({
     this.stock,
     this.onPressed,
-    this.onDoubleTap,
     this.onLongPressed
   }) : super(key: ObjectKey(stock));
 
   final Stock stock;
   final StockRowActionCallback onPressed;
-  final StockRowActionCallback onDoubleTap;
   final StockRowActionCallback onLongPressed;
 
   static const double kHeight = 79.0;
@@ -36,7 +34,6 @@ class StockRow extends StatelessWidget {
       changeInPrice = '+' + changeInPrice;
     return InkWell(
       onTap: _getHandler(onPressed),
-      onDoubleTap: _getHandler(onDoubleTap),
       onLongPress: _getHandler(onLongPressed),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 20.0),
