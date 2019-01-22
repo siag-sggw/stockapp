@@ -192,7 +192,7 @@ class StockHomeState extends State<StockHome> {
   void _logout() async {
     // await new GoogleSignIn().signOut();
     // Navigator.pop(context, '/');
-    Navigator.pushReplacementNamed(context, "/message");
+    Navigator.pushReplacementNamed(context, "/");
   }
 
   void _handleShowAbout() {

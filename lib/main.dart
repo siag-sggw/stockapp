@@ -29,7 +29,7 @@ class _StocksLocalizationsDelegate extends LocalizationsDelegate<StockStrings> {
   Future<StockStrings> load(Locale locale) => StockStrings.load(locale);
 
   @override
-  bool isSupported(Locale locale) => locale.languageCode == 'es' || locale.languageCode == 'en';
+  bool isSupported(Locale locale) => locale.languageCode == 'en';
 
   @override
   bool shouldReload(_StocksLocalizationsDelegate old) => false;
@@ -137,10 +137,10 @@ class StocksAppState extends State<StocksApp> {
       showPerformanceOverlay: _configuration.showPerformanceOverlay,
       showSemanticsDebugger: _configuration.showSemanticsDebugger,
       routes: <String, WidgetBuilder>{
-         '/':    (BuildContext context) => Login(),
-         '/home':(BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
-          '/message':(BuildContext context) => MesssageWidget(),
-         '/settings': (BuildContext context) => StockSettings(_configuration, configurationUpdater)
+        '/':    (BuildContext context) => Login(),
+        '/home':(BuildContext context) => StockHome(stocks, _configuration, configurationUpdater),
+        '/message':(BuildContext context) => MesssageWidget(),
+        '/settings': (BuildContext context) => StockSettings(_configuration, configurationUpdater)
       },
       onGenerateRoute: _getRoute,
     );
