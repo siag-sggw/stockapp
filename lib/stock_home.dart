@@ -17,7 +17,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 typedef ModeUpdater = void Function(StockMode mode);
 
 enum _StockMenuItem { autorefresh, refresh, speedUp, speedDown }
-enum StockHomeTab { market, portfolio }
+enum StockHomeTab { market, favourite }
 
 class _NotImplementedDialog extends StatelessWidget {
   @override
@@ -235,7 +235,7 @@ class StockHomeState extends State<StockHome> {
       bottom: TabBar(
         tabs: <Widget>[
           Tab(text: StockStrings.of(context).market()),
-          Tab(text: StockStrings.of(context).portfolio()),
+          Tab(text: StockStrings.of(context).favourite()),
         ],
       ),
     );
@@ -253,17 +253,22 @@ class StockHomeState extends State<StockHome> {
     return stocks.where((Stock stock) => stock.symbol.contains(regexp));
   }
 
-  void _buyStock(Stock stock) {
+  void _addToFavourites(Stock stock) {
     setState(() {
-      stock.percentChange = 100.0 * (1.0 / stock.lastSale);
-      stock.lastSale += 1.0;
+      if(favouriteSymbols.contains(stock.symbol)) {
+        favouriteSymbols.remove(stock.symbol);
+      } else {
+        favouriteSymbols.add(stock.symbol);
+      }
     });
     _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text('Purchased ${stock.symbol} for ${stock.lastSale}'),
+      content: Text('Added ${stock.symbol} to FAVOURITE tab.'),
       action: SnackBarAction(
-        label: 'BUY MORE',
+        label: 'UNDO',
         onPressed: () {
-          _buyStock(stock);
+          setState(() {
+            favouriteSymbols.removeWhere((symbol) => symbol == stock.symbol);
+          });
         },
       ),
     ));
@@ -272,7 +277,7 @@ class StockHomeState extends State<StockHome> {
   Widget _buildStockList(BuildContext context, Iterable<Stock> stocks, StockHomeTab tab) {
     return StockList(
       stocks: stocks.toList(),
-      onAction: _buyStock,
+      onAction: _addToFavourites,
       onOpen: (Stock stock) {
         Navigator.pushNamed(context, '/stock:${stock.symbol}');
       },
@@ -292,7 +297,7 @@ class StockHomeState extends State<StockHome> {
     );
   }
 
-  static const List<String> portfolioSymbols = <String>['AAPL','FIZZ', 'FIVE', 'FLAT', 'ZINC', 'ZNGA'];
+  static List<String> favouriteSymbols = new List();
 
   Widget buildSearchBar() {
     return AppBar(
@@ -338,7 +343,7 @@ class StockHomeState extends State<StockHome> {
         body: TabBarView(
           children: <Widget>[
             _buildStockTab(context, StockHomeTab.market, widget.stocks.allSymbols),
-            _buildStockTab(context, StockHomeTab.portfolio, portfolioSymbols),
+            _buildStockTab(context, StockHomeTab.favourite, favouriteSymbols),
           ],
         ),
       ),
