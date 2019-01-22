@@ -114,7 +114,14 @@ class StockHomeState extends State<StockHome> {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          const DrawerHeader(child: Center(child: Text('Stocks'))),
+          DrawerHeader(child: new Hero(
+                  tag: 'hero',
+                  child: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 64.0,
+                    child: Image.asset('assets/increase.png'),
+                  ),
+                ),),
           const ListTile(
             leading: Icon(Icons.assessment),
             title: Text('Stock List'),
@@ -122,27 +129,12 @@ class StockHomeState extends State<StockHome> {
           ),
           const ListTile(
             leading: Icon(Icons.account_balance),
-            title: Text('Account Balance'),
-            enabled: false,
-          ),
-          ListTile(
-            leading: const Icon(Icons.dvr),
-            title: const Text('Dump App to Console'),
-            onTap: () {
-              try {
-                debugDumpApp();
-                debugDumpRenderTree();
-                debugDumpLayerTree();
-                debugDumpSemanticsTree(DebugSemanticsDumpOrder.traversalOrder);
-              } catch (e, stack) {
-                debugPrint('Exception while dumping app:\n$e\n$stack');
-              }
-            },
+            title: Text('My assets')
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.thumb_up),
-            title: const Text('Optimistic'),
+            leading: const Icon(Icons.assistant),
+            title: const Text('Begginer mode'),
             trailing: Radio<StockMode>(
               value: StockMode.optimistic,
               groupValue: widget.configuration.stockMode,
@@ -153,8 +145,8 @@ class StockHomeState extends State<StockHome> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.thumb_down),
-            title: const Text('Pessimistic'),
+            leading: const Icon(Icons.attach_money),
+            title: const Text('Pro mode'),
             trailing: Radio<StockMode>(
               value: StockMode.pessimistic,
               groupValue: widget.configuration.stockMode,
@@ -196,7 +188,41 @@ class StockHomeState extends State<StockHome> {
   }
 
   void _handleShowAbout() {
-    showAboutDialog(context: context);
+    const List<String> names = ["Wiktor El Attar", "Ilya Piatrenka",
+                                "Kamil Barciński", "Michał Pindel",
+                                "Jakub Kowalik", "Karina Śmiech",
+                                "Patryk Figarski", "Zuza Gałecka",
+                                "Kamil Jaszczak", "Grzegorz Jarząbek",
+                                "Maksymilian Adamowicz", "Michał Kwiatkowski"];
+    double width = MediaQuery.of(context).size.width;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text("App creators:"),
+          children: <Widget>[
+            Container(
+              width: width,
+              child: ListView.builder(
+                itemCount: names.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(40, 0, 10, 3),
+                    child: Text(
+                      "- ${names[index]}",
+                      style: TextStyle(
+                        fontSize: 16
+                      ),  
+                    ),
+                  );
+                },
+                shrinkWrap: true,
+              )
+            )
+          ],
+        );
+      }
+    );
   }
 
   Widget buildAppBar() {
