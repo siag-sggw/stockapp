@@ -16,26 +16,25 @@ import 'package:http/http.dart' as http;
 final math.Random _rng = math.Random();
 
 class Stock {
-  Stock(this.symbol, this.name, this.lastSale, this.marketCap, this.percentChange);
+  Stock(this.symbol, this.open, this.low, this.high, this.volume, this.percentChange);
 
-  Stock.fromFields(List<String> fields) {
-    // FIXME: This class should only have static data, not lastSale, etc.
-    // "Symbol","Name","LastSale","MarketCap","IPOyear","Sector","industry","Summary Quote",
-    lastSale = 0.0;
-    try {
-      lastSale = double.parse(fields[2]);
-    } catch (_) {}
-    symbol = fields[0];
-    name = fields[1];
-    marketCap = fields[4];
-    percentChange = (_rng.nextDouble() * 20) - 10;
+  Stock.fromFields(String symbol, Map<String, dynamic> fields) {
+    symbol = symbol;
+    open = fields['open'];
+    close = fields['close'];
+    high = fields['high'];
+    low = fields['low'];
+    volume = fields['volume'];
+    percentChange = fields['changePercent'];
   }
 
   String symbol;
-  String name;
-  double lastSale;
-  String marketCap;
-  double percentChange;
+  num open;
+  num close;
+  num high;
+  num low;
+  num volume;
+  num percentChange;
 }
 
 class StockData extends ChangeNotifier {
@@ -46,52 +45,80 @@ class StockData extends ChangeNotifier {
     }
   }
 
-  final List<String> _symbols = <String>[];
-  final Map<String, Stock> _stocks = <String, Stock>{};
-
+  final List<String> _symbols = [
+    'AAPL',
+    'AMD',
+    'CMCSA',
+    'CRON',
+    'CSCO',
+    'CZR',
+    'EBAY',
+    'FB',
+    'INTC',
+    'MSFT',
+    'MU',
+    'NFLX',
+    'QCOM',
+    'QQQ',
+    'SIRI',
+    'SQQQ',
+    'TQQQ',
+    'TVIX',
+  ];
   Iterable<String> get allSymbols => _symbols;
+  final Map<String, Stock> _stocks = <String, Stock>{};
 
   Stock operator [](String symbol) => _stocks[symbol];
 
   bool get loading => _httpClient != null;
 
-  void add(List<dynamic> data) {
-    for (List<dynamic> fields in data) {
-      final Stock stock = Stock.fromFields(fields.cast<String>());
-      _symbols.add(stock.symbol);
-      _stocks[stock.symbol] = stock;
+  void add(List<dynamic> data, String symbol) {
+    //print(data);
+    for (Map<String, dynamic> fields in data) {
+      print(fields);
+      final Stock stock = Stock.fromFields(symbol, fields);
+      _stocks[symbol] = stock;
     }
-    _symbols.sort();
     notifyListeners();
   }
 
   static const int _chunkCount = 30;
   int _nextChunk = 0;
 
-  String _urlToFetch(int chunk) {
-    return 'https://domokit.github.io/examples/stocks/data/stock_data_$chunk.json';
+  String _urlToFetch(String symbol) {
+    return 'https://api.iextrading.com/1.0/stock/${symbol}/chart/1m';
   }
 
   http.Client _httpClient;
 
   static bool actuallyFetchData = true;
 
+  // void _fetchData() {
+  //   for (String symbol in _symbols {
+  //     _httpClient.get(_urlToFetch(symbol)).then<void>((http.Response response) {
+  //       print('response');
+  //     });
+  //   }
+  //   ;
+  // }
+
   void _fetchNextChunk() {
-    _httpClient.get(_urlToFetch(_nextChunk++)).then<void>((http.Response response) {
-      final String json = response.body;
-      if (json == null) {
-        debugPrint('Failed to load stock data chunk ${_nextChunk - 1}');
-        _end();
-        return;
-      }
-      const JsonDecoder decoder = JsonDecoder();
-      add(decoder.convert(json));
-      if (_nextChunk < _chunkCount) {
-        _fetchNextChunk();
-      } else {
-        _end();
-      }
-    });
+    for (String symbol in _symbols) {
+      _httpClient
+          .get(_urlToFetch(symbol))
+          .then<void>((http.Response response) {
+        final String json = response.body;
+        //print(json);
+        if (json == null) {
+          debugPrint('Failed to load stock data chunk ${_nextChunk - 1}');
+          _end();
+          return;
+        }
+        const JsonDecoder decoder = JsonDecoder();
+ //       print(decoder.convert(json));
+        add(decoder.convert(json), symbol);
+      });
+    }
   }
 
   void _end() {

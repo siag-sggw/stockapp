@@ -28,10 +28,8 @@ class StockRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String lastSale = '\$${stock.lastSale.toStringAsFixed(2)}';
+    final String lastSale = '\$${stock.close.toStringAsFixed(2)}';
     String changeInPrice = '${stock.percentChange.toStringAsFixed(2)}%';
-    if (stock.percentChange > 0)
-      changeInPrice = '+' + changeInPrice;
     return InkWell(
       onTap: _getHandler(onPressed),
       onLongPress: _getHandler(onLongPressed),
@@ -57,7 +55,7 @@ class StockRow extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      stock.symbol
+                      stock.symbol.toString()
                     )
                   ),
                   Expanded(
