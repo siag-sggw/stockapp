@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 final math.Random _rng = math.Random();
 
 class Stock {
-  Stock(this.symbol, this.open, this.low, this.high, this.volume, this.percentChange);
+  Stock(this.symbol, this.open, this.close, this.low, this.high, this.volume, this.percentChange);
 
   Stock.fromFields(String symboll, Map<String, dynamic> fields) {
     symbol = symboll;
