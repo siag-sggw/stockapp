@@ -18,8 +18,8 @@ final math.Random _rng = math.Random();
 class Stock {
   Stock(this.symbol, this.open, this.low, this.high, this.volume, this.percentChange);
 
-  Stock.fromFields(String symbol, Map<String, dynamic> fields) {
-    symbol = symbol;
+  Stock.fromFields(String symboll, Map<String, dynamic> fields) {
+    symbol = symboll;
     open = fields['open'];
     close = fields['close'];
     high = fields['high'];
@@ -77,6 +77,7 @@ class StockData extends ChangeNotifier {
     for (Map<String, dynamic> fields in data) {
       print(fields);
       final Stock stock = Stock.fromFields(symbol, fields);
+      print(stock.symbol);
       _stocks[symbol] = stock;
     }
     notifyListeners();
@@ -102,9 +103,9 @@ class StockData extends ChangeNotifier {
   //   ;
   // }
 
-  void _fetchNextChunk() {
+  void _fetchNextChunk() async {
     for (String symbol in _symbols) {
-      _httpClient
+      await _httpClient
           .get(_urlToFetch(symbol))
           .then<void>((http.Response response) {
         final String json = response.body;
@@ -115,14 +116,16 @@ class StockData extends ChangeNotifier {
           return;
         }
         const JsonDecoder decoder = JsonDecoder();
- //       print(decoder.convert(json));
+        //print(decoder.convert(json));
         add(decoder.convert(json), symbol);
       });
     }
+    _end();
   }
 
   void _end() {
     _httpClient?.close();
     _httpClient = null;
+    actuallyFetchData = false;
   }
 }
