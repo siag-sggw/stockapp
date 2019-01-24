@@ -20,12 +20,12 @@ class Stock {
 
   Stock.fromFields(String symboll, Map<String, dynamic> fields) {
     symbol = symboll;
-    open = fields['open'];
-    close = fields['close'];
-    high = fields['high'];
-    low = fields['low'];
-    volume = fields['volume'];
-    percentChange = fields['changePercent'];
+    open = fields['open'] + .0;
+    close = fields['close'] + .0;
+    high = fields['high'] + .0;
+    low = fields['low'] + .0;
+    volume = fields['volume'] + .0;
+    percentChange = fields['changePercent'] + .0;
   }
 
   String symbol;
@@ -75,9 +75,9 @@ class StockData extends ChangeNotifier {
   void add(List<dynamic> data, String symbol) {
     //print(data);
     for (Map<String, dynamic> fields in data) {
-      print(fields);
+      //print(fields);
       final Stock stock = Stock.fromFields(symbol, fields);
-      print(stock.symbol);
+      //print(stock.symbol);
       _stocks[symbol] = stock;
     }
     notifyListeners();
