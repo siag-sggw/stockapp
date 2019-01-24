@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_candlesticks/flutter_candlesticks.dart';
-
+import 'dart:math';
 import 'stock_arrow.dart';
 import 'stock_data.dart';
 
@@ -429,7 +429,8 @@ class _StockSymbolView extends StatelessWidget {
         "low": 172.9465,
         "close": 173.9257,
         "volumeto": 21578420
-      },
+      }];
+      List sampleData2 = [
       {
         "open": 174.5885,
         "high": 177.0086,
@@ -849,7 +850,8 @@ class _StockSymbolView extends StatelessWidget {
         "low": 186.3043,
         "close": 186.5724,
         "volumeto": 18831470
-      },
+      }];
+      List sampleData4 = [
       {
         "open": 188.2109,
         "high": 190.0778,
@@ -1269,7 +1271,8 @@ class _StockSymbolView extends StatelessWidget {
         "low": 225.9417,
         "close": 227.1973,
         "volumeto": 32042000
-      },
+      }];
+      List sampleData5 = [
       {
         "open": 227.1674,
         "high": 227.6158,
@@ -1689,7 +1692,8 @@ class _StockSymbolView extends StatelessWidget {
         "low": 154.23,
         "close": 157.92,
         "volumeto": 37039737
-      },
+      }];
+      List sampledata6 = [
       {
         "open": 143.98,
         "high": 145.72,
@@ -1773,8 +1777,115 @@ class _StockSymbolView extends StatelessWidget {
         "low": 155.9806,
         "close": 156.82,
         "volumeto": 33751023
-      }
+      },
+      {
+        "open": 154.89,
+        "high": 158.85,
+        "low": 154.23,
+        "close": 157.92,
+        "volumeto": 37039737
+      },
+      {
+        "open": 160.8679,
+        "high": 163.6377,
+        "low": 160.6602,
+        "close": 161.8868,
+        "volumeto": 28382084
+      },
+      {
+        "open": 162.3518,
+        "high": 163.9444,
+        "low": 161.6098,
+        "close": 162.4507,
+        "volumeto": 27963014
+      },
+      {
+        "open": 162.233,
+        "high": 162.5595,
+        "low": 158.8994,
+        "close": 160.5711,
+        "volumeto": 35655839
+      },
+      {
+        "open": 160.3834,
+        "high": 165.4579,
+        "low": 160.0963,
+        "close": 163.4795,
+        "volumeto": 42427424
+      },
+      {
+        "open": 164.6173,
+        "high": 167.377,
+        "low": 163.4894,
+        "close": 167.2781,
+        "volumeto": 53569376
+      },
+      {
+        "open": 173.3371,
+        "high": 175.8349,
+        "low": 171.9275,
+        "close": 174.6676,
+        "volumeto": 66539371
+      },
+      {
+        "open": 173.985,
+        "high": 175.5876,
+        "low": 172.5617,
+        "close": 174.9842,
+        "volumeto": 34068180
+      },
+      {
+        "open": 176.3295,
+        "high": 182.2649,
+        "low": 176.2504,
+        "close": 181.8494,
+        "volumeto": 56201317
+      },
+      {
+        "open": 183.1849,
+        "high": 185.648,
+        "low": 182.7595,
+        "close": 183.1651,
+        "volumeto": 42451423
+      },
+      {
+        "open": 182.9969,
+        "high": 184.2136,
+        "low": 181.6862,
+        "close": 184.0455,
+        "volumeto": 28402777
+      },
+      {
+        "open": 184.5401,
+        "high": 185.3809,
+        "low": 183.2244,
+        "close": 185.3414,
+        "volumeto": 23211241
+      },
+      {
+        "open": 185.7173,
+        "high": 188.3189,
+        "low": 185.6282,
+        "close": 187.9925,
+        "volumeto": 27989289
+      },
+      {
+        "open": 188.1712,
+        "high": 188.7372,
+        "low": 186.1454,
+        "close": 187.2774,
+        "volumeto": 26212221
+      },
     ];
+    List data = [sampleData, sampleData4, sampledata6];
+    Random rand = new Random();
+    List prepareData() {
+      if(stock.symbol == "AAPL") {
+        return sampleData5;
+      } else {
+        return data[rand.nextInt(2)];
+      }
+    }
     assert(stock != null);
     final String lastSale = '\$${stock.close.toStringAsFixed(2)}';
     String changeInPrice = '${stock.percentChange.toStringAsFixed(2)}%';
@@ -1797,7 +1908,7 @@ class _StockSymbolView extends StatelessWidget {
         new Container(
           height: 250.0,
           child: new OHLCVGraph(
-              data: sampleData,
+              data: prepareData(),
               enableGridLines: true,
               volumeProp: 0.2,
               gridLineAmount: 5,
