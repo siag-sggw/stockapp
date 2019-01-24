@@ -19,38 +19,6 @@ typedef ModeUpdater = void Function(StockMode mode);
 enum _StockMenuItem { autorefresh, refresh, speedUp, speedDown }
 enum StockHomeTab { market, favourite }
 
-class _NotImplementedDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Not Implemented'),
-      content: const Text('This feature has not yet been implemented.'),
-      actions: <Widget>[
-        FlatButton(
-          onPressed: debugDumpApp,
-          child: Row(
-            children: <Widget>[
-              const Icon(
-                Icons.dvr,
-                size: 18.0,
-              ),
-              Container(
-                width: 8.0,
-              ),
-              const Text('DUMP APP TO CONSOLE'),
-            ],
-          ),
-        ),
-        FlatButton(
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-          child: const Text('OH WELL'),
-        ),
-      ],
-    );
-  }
-}
 
 class StockHome extends StatefulWidget {
   const StockHome(this.stocks, this.configuration, this.updater);
@@ -88,28 +56,6 @@ class StockHomeState extends State<StockHome> {
       widget.updater(widget.configuration.copyWith(stockMode: value));
   }
 
-  void _handleStockMenu(BuildContext context, _StockMenuItem value) {
-    switch (value) {
-      case _StockMenuItem.autorefresh:
-        setState(() {
-          _autorefresh = !_autorefresh;
-        });
-        break;
-      case _StockMenuItem.refresh:
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) => _NotImplementedDialog(),
-        );
-        break;
-      case _StockMenuItem.speedUp:
-        timeDilation /= 5.0;
-        break;
-      case _StockMenuItem.speedDown:
-        timeDilation *= 5.0;
-        break;
-    }
-  }
-
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -126,10 +72,6 @@ class StockHomeState extends State<StockHome> {
             leading: Icon(Icons.assessment),
             title: Text('Stock List'),
             selected: true,
-          ),
-          const ListTile(
-            leading: Icon(Icons.account_balance),
-            title: Text('My assets')
           ),
           const Divider(),
           ListTile(
@@ -157,11 +99,6 @@ class StockHomeState extends State<StockHome> {
             },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: _handleShowSettings,
-          ),
           ListTile(
             leading: const Icon(Icons.help),
             title: const Text('About'),
@@ -234,28 +171,6 @@ class StockHomeState extends State<StockHome> {
           icon: const Icon(Icons.search),
           onPressed: _handleSearchBegin,
           tooltip: 'Search',
-        ),
-        PopupMenuButton<_StockMenuItem>(
-          onSelected: (_StockMenuItem value) { _handleStockMenu(context, value); },
-          itemBuilder: (BuildContext context) => <PopupMenuItem<_StockMenuItem>>[
-            CheckedPopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.autorefresh,
-              checked: _autorefresh,
-              child: const Text('Autorefresh'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.refresh,
-              child: Text('Refresh'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.speedUp,
-              child: Text('Increase animation speed'),
-            ),
-            const PopupMenuItem<_StockMenuItem>(
-              value: _StockMenuItem.speedDown,
-              child: Text('Decrease animation speed'),
-            ),
-          ],
         ),
       ],
       bottom: TabBar(
@@ -341,21 +256,6 @@ class StockHomeState extends State<StockHome> {
     );
   }
 
-  void _handleCreateCompany() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) => _CreateCompanySheet(),
-    );
-  }
-
-  Widget buildFloatingActionButton() {
-    return FloatingActionButton(
-      tooltip: 'Create company',
-      child: const Icon(Icons.add),
-      backgroundColor: Theme.of(context).accentColor,
-      onPressed: _handleCreateCompany,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -364,7 +264,6 @@ class StockHomeState extends State<StockHome> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: _isSearching ? buildSearchBar() : buildAppBar(),
-        floatingActionButton: buildFloatingActionButton(),
         drawer: _buildDrawer(context),
         body: TabBarView(
           children: <Widget>[
@@ -373,25 +272,6 @@ class StockHomeState extends State<StockHome> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _CreateCompanySheet extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: const <Widget>[
-        TextField(
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'Company Name',
-          ),
-        ),
-        Text('(This demo is not yet complete.)'),
-        // For example, we could add a button that actually updates the list
-        // and then contacts the server, etc.
-      ],
     );
   }
 }
