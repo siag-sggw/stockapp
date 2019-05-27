@@ -52,10 +52,11 @@ class LoginState extends State<Login> {
       GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
       GoogleSignInAuthentication gauth =
           await googleSignInAccount.authentication;
-      FirebaseUser user = await _auth.signInWithGoogle(
-        accessToken: gauth.accessToken,
-        idToken: gauth.idToken,
-      );
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: gauth.accessToken,
+      idToken: gauth.idToken,
+    );
+      FirebaseUser user = await _auth.signInWithCredential(credential);
       Navigator.pushNamed(context, '/home');
 
       return user;
